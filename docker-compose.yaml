@@ -1,0 +1,19 @@
+version: '1'
+
+services:
+  nginx:
+    image: nginx:1.21.5-alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./error.log:/var/log/nginx/error.log
+    container_name: timebook-proxy
+    depends_on:
+      - api
+
+  api:
+    image: m2162003/timebook-api
+    ports:
+      - 8080:8080
+    container_name: timebook-api
