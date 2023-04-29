@@ -14,7 +14,7 @@ services:
     container_name: nginx
     depends_on:
       - api
-    # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
   api:
     image: m2162003/timebook-api
