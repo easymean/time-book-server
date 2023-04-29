@@ -11,10 +11,10 @@ services:
       - ./nginx/error.log:/var/log/nginx/error.log
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
-    container_name: timebook-proxy
+    container_name: nginx
     depends_on:
       - api
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
   api:
     image: m2162003/timebook-api
