@@ -1,8 +1,7 @@
 package com.spring.timebook.time;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller("/time")
 public class TimeController {
@@ -13,13 +12,27 @@ public class TimeController {
         this.timeService = timeService;
     }
 
-    @GetMapping()
-    public @ResponseBody  String getTime() {
+    @GetMapping
+    @ResponseBody
+    public String getTimeListByDay(@RequestParam int month, @RequestParam int day) {
         return "Hello World!";
     }
 
-    @GetMapping("/day")
-    public @ResponseBody String getTimeListByDay(){
+    @PutMapping("/{id}")
+    @ResponseBody
+    public String updateTime(@PathVariable Long id){
         return "Hello world";
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    public String deleteTime(@PathVariable Long id){
+        return "";
+    }
+
+    @PostMapping
+    @ResponseBody
+    public String createTime(){
+        return "";
     }
 }
