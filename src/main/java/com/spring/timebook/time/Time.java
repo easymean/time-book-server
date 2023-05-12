@@ -21,7 +21,7 @@ public class Time extends BaseEntity {
 
     private Long userId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @ManyToOne

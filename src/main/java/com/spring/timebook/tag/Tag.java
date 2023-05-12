@@ -25,7 +25,7 @@ public class Tag extends BaseEntity {
     private SpendingType spendingType;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @OneToMany(mappedBy = "tag")
