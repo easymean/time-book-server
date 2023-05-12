@@ -2,12 +2,22 @@ package com.spring.timebook.time;
 
 import com.spring.timebook.common.BaseEntity;
 import com.spring.timebook.tag.SpendingType;
+import com.spring.timebook.tag.Tag;
+import com.spring.timebook.user.User;
+import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalTime;
 
+@Entity
+@Table(name="time")
+@NoArgsConstructor
 public class Time extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Setter
@@ -22,9 +32,11 @@ public class Time extends BaseEntity {
     private SpendingType spendingType;
 
     @Setter
+    @Temporal(TemporalType.TIME)
     private LocalTime startAt;
 
     @Setter
+    @Temporal(TemporalType.TIME)
     private LocalTime endAt;
 
     @Builder
