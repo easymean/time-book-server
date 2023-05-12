@@ -16,9 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 public class Tag extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Setter
     private String title;

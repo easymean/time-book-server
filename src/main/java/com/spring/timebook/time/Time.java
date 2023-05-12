@@ -16,10 +16,6 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class Time extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Setter
     private String description;
 
