@@ -34,6 +34,14 @@ public class User extends BaseEntity {
     @Setter
     private long savedTime;
 
+    @OneToMany(mappedBy = "user")
+    @Getter
+    private List<Time> times = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    @Getter
+    private List<Tag> tags = new ArrayList<>();
+
     @Builder
     public User(String email, String username) {
         super();

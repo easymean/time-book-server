@@ -27,14 +27,24 @@ public class Tag extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SpendingType spendingType;
 
-    private final Long userId;
+
+    @ManyToOne
+    private User user;
+
+    @OneToMany(mappedBy = "tag")
+    @Getter
+    private List<Time> times;
 
 
     @Builder
-    public Tag(String title, SpendingType spendingType, Long userId) {
+    public Tag(String title, SpendingType spendingType) {
         super();
         this.title = title;
         this.spendingType = spendingType;
-        this.userId = userId;
+    }
+
+    public void user(User user){
+        this.user = user;
+        user.getTags().add(this);
     }
 }
