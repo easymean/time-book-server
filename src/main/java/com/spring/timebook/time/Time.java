@@ -24,7 +24,7 @@ public class Time extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Tag tag;
 
     @Setter
