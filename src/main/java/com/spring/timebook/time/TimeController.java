@@ -3,7 +3,8 @@ package com.spring.timebook.time;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller("/time")
+@Controller
+@RequestMapping("/time")
 public class TimeController {
 
     private final TimeService timeService;
@@ -18,6 +19,12 @@ public class TimeController {
         return "Hello World!";
     }
 
+    @PostMapping
+    @ResponseBody
+    public String createTime(){
+        return "";
+    }
+
     @PutMapping("/{id}")
     @ResponseBody
     public String updateTime(@PathVariable Long id){
@@ -27,12 +34,6 @@ public class TimeController {
     @DeleteMapping("/{id}")
     @ResponseBody
     public String deleteTime(@PathVariable Long id){
-        return "";
-    }
-
-    @PostMapping
-    @ResponseBody
-    public String createTime(){
         return "";
     }
 }
