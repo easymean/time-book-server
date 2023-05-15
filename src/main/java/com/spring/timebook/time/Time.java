@@ -19,7 +19,6 @@ public class Time extends BaseEntity {
     @Setter
     private String description;
 
-    private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -39,13 +38,12 @@ public class Time extends BaseEntity {
     private LocalTime endAt;
 
     @Builder
-    public Time(String description, SpendingType spendingType, LocalTime startAt, LocalTime endAt, Long userId) {
+    public Time(String description, SpendingType spendingType, LocalTime startAt, LocalTime endAt) {
         super();
         this.description = description;
         this.spendingType = spendingType;
         this.startAt = startAt;
         this.endAt = endAt;
-        this.userId = userId;
     }
 
     public void setTag(Tag tag){

@@ -40,7 +40,7 @@ public class Tag extends BaseEntity {
         this.spendingType = spendingType;
     }
 
-    public void user(User user){
+    public void setUser(User user){
         this.user = user;
         user.getTags().add(this);
     }

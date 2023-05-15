@@ -30,11 +30,11 @@ public class User extends BaseEntity {
     @Setter
     private long savedTime;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     @Getter
     private List<Time> times = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     @Getter
     private List<Tag> tags = new ArrayList<>();
 
