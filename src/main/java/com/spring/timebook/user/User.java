@@ -30,6 +30,12 @@ public class User extends BaseEntity {
     @Setter
     private long savedTime;
 
+    @Setter
+    private String snsId;
+
+    @Setter
+    private String snsType;
+
     @OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     @Getter
     private List<Time> times = new ArrayList<>();
@@ -46,4 +52,5 @@ public class User extends BaseEntity {
         this.level = 1;
         this.savedTime = 0;
     }
+
 }
