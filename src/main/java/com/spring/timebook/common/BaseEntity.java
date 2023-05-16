@@ -1,10 +1,27 @@
 package com.spring.timebook.common;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.Instant;
 
-public class BaseEntity {
-    private final Instant createdAt;
+@MappedSuperclass
+public abstract class BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Instant createdAt;
+
+    @Setter
+    @Temporal(TemporalType.TIMESTAMP)
     private Instant updatedAt;
+
+    @Setter
+    @Getter
     private boolean isDeleted;
 
     public BaseEntity(){
