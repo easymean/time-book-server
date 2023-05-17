@@ -9,7 +9,7 @@ import java.time.Instant;
 @MappedSuperclass
 public abstract class BaseEntity {
 
-    @Id
+    @Id @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
