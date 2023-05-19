@@ -1,5 +1,6 @@
 package com.spring.timebook.user;
 
+import com.spring.timebook.auth.PermissionRole;
 import com.spring.timebook.common.BaseEntity;
 import com.spring.timebook.tag.Tag;
 import com.spring.timebook.time.Time;
@@ -30,6 +31,10 @@ public class User extends BaseEntity {
     @Setter
     private long savedTime;
 
+    @Setter @Getter
+    @Enumerated(EnumType.STRING)
+    private PermissionRole permissionRole;
+
     @OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     @Getter
     private List<Time> times = new ArrayList<>();
@@ -45,5 +50,6 @@ public class User extends BaseEntity {
         this.username = username;
         this.level = 1;
         this.savedTime = 0;
+        this.permissionRole = PermissionRole.MEMBER;
     }
 }
