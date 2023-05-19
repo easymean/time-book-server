@@ -1,7 +1,8 @@
 package com.spring.timebook.aop;
 
 import com.spring.timebook.auth.TokenProvider;
-import com.spring.timebook.auth.exception.AuthenticationException;
+import com.spring.timebook.user.User;
+import com.spring.timebook.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -12,9 +13,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final TokenProvider tokenProvider;
+    private final UserService userService;
 
-    public AuthenticationInterceptor(TokenProvider tokenProvider) {
+    public AuthenticationInterceptor(TokenProvider tokenProvider, UserService userService) {
         this.tokenProvider = tokenProvider;
+        this.userService = userService;
     }
 
     @Override
@@ -28,11 +31,12 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         try {
             String token = extractTokenFromHeader(request);
             String userId = tokenProvider.getUserIdFromToken(token);
-            request.setAttribute("userId", userId);
+            User user = userService.loadUserById(userId);
 
+            request.setAttribute("userId", user.getId());
             return true;
         }catch (Exception e){
-            throw new InterceptorException();
+            throw new InterceptorException(e.getMessage());
         }
 
     }
@@ -41,7 +45,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         try {
             return request.getHeader("Authorization").split(" ")[1];
         }catch(Exception e){
-            throw new AuthenticationException("Cannot extract token from header");
+            throw new InterceptorException("Cannot extract token from header");
         }
     }
 }
