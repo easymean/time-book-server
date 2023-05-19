@@ -22,9 +22,5 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    @Override
-    public User loadUserById(String id) {
-        return userRepository.findOneById(Long.parseLong(id))
-                .orElseThrow(() -> new UserNotFoundException("${id}에 해당하는 유저를 찾을 수 없습니다."));
-    }
+
 }
