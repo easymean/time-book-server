@@ -1,8 +1,11 @@
 package com.spring.timebook.aop;
 
+import com.spring.timebook.auth.AuthService;
+import com.spring.timebook.auth.AuthUser;
+import com.spring.timebook.auth.PermissionRole;
 import com.spring.timebook.auth.TokenProvider;
+import com.spring.timebook.auth.annotation.Permission;
 import com.spring.timebook.user.User;
-import com.spring.timebook.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -13,27 +16,32 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final TokenProvider tokenProvider;
-    private final UserService userService;
+    private final AuthService authService;
 
-    public AuthenticationInterceptor(TokenProvider tokenProvider, UserService userService) {
+    public AuthenticationInterceptor(TokenProvider tokenProvider, AuthService authService) {
         this.tokenProvider = tokenProvider;
-        this.userService = userService;
+        this.authService = authService;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
-        if(!(handler instanceof HandlerMethod)){
+        if(!(handler instanceof HandlerMethod handlerMethod)){
+            return true;
+        }
+
+        Permission permission = ((HandlerMethod) handler).getMethodAnnotation(Permission.class);
+        if(permission == null){
             return true;
         }
 
         try {
             String token = extractTokenFromHeader(request);
             String userId = tokenProvider.getUserIdFromToken(token);
-            User user = userService.loadUserById(userId);
+            AuthUser user = authService.loadUserById(userId);
+            request.setAttribute("user", user);
 
-            request.setAttribute("userId", user.getId());
+
             return true;
         }catch (Exception e){
             throw new InterceptorException(e.getMessage());
