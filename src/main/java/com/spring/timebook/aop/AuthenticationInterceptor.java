@@ -2,10 +2,8 @@ package com.spring.timebook.aop;
 
 import com.spring.timebook.auth.AuthService;
 import com.spring.timebook.auth.AuthUser;
-import com.spring.timebook.auth.PermissionRole;
 import com.spring.timebook.auth.TokenProvider;
 import com.spring.timebook.auth.annotation.Permission;
-import com.spring.timebook.user.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -26,7 +24,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
-        if(!(handler instanceof HandlerMethod handlerMethod)){
+        if(!(handler instanceof HandlerMethod)){
             return true;
         }
 
