@@ -10,9 +10,30 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/oauth2")
 public class OAuthController {
 
-    @PostMapping("/login/naver")
+    private final OAuthAdapter oAuthAdapter;
+
+    public OAuthController(OAuthAdapter oAuthAdapter) {
+        this.oAuthAdapter = oAuthAdapter;
+    }
+
+    @PostMapping("/naver")
     @ResponseBody
-    public String naverCbLogin(){
+    public String loginByNaver(){
+        oAuthAdapter.loginByOAuth("naver");
+        return "";
+    }
+
+    @PostMapping("/google")
+    @ResponseBody
+    public String loginByGoogle(){
+        oAuthAdapter.loginByOAuth("google");
+        return "";
+    }
+
+    @PostMapping("/kakao")
+    @ResponseBody
+    public String loginByKakao(){
+        oAuthAdapter.loginByOAuth("kakao");
         return "";
     }
 }

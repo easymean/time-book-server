@@ -18,6 +18,7 @@ import java.util.List;
 public class User extends BaseEntity {
 
     @Column(nullable = false, unique = true)
+    @Getter
     private String email;
 
     @Setter
