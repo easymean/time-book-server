@@ -12,7 +12,7 @@ import lombok.Setter;
 import java.time.LocalTime;
 
 @Entity
-@Table(name="time")
+@Table(name="times")
 @NoArgsConstructor
 public class Time extends BaseEntity {
 

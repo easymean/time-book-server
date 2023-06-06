@@ -12,7 +12,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name="tag")
+@Table(name="tags")
 @NoArgsConstructor
 public class Tag extends BaseEntity {
 
@@ -23,7 +23,6 @@ public class Tag extends BaseEntity {
     @Setter
     @Enumerated(EnumType.STRING)
     private SpendingType spendingType;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
