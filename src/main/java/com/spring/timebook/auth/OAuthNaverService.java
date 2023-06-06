@@ -5,15 +5,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.timebook.auth.exception.ParseException;
 import com.spring.timebook.user.User;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -22,33 +20,36 @@ import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
-@NoArgsConstructor
+@Component
 public class OAuthNaverService implements OAuthService{
 
-    @Value("${spring.security.oauth2.client.registration.naver.client-id}")
+    @Value("${login.naver.client-id}")
     private String CLIENT_ID;
 
-    @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
+    @Value("${login.naver.client-secret}")
     private String CLIENT_SECRET;
 
-    @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
+    @Value("${login.naver.redirect-uri}")
     private String REDIRECT_URI;
 
-
     // 로그인 인증 요청
-    private final String LOGIN_REQUEST_URI = "https://nid.naver.com/oauth2.0/authorize";
+    @Value("${login.naver.authorization-uri}")
+    private String AUTHORIZATION_URI;
 
     // 토급 요청
-    private final String TOKEN_REQUEST_URI = "https://nid.naver.com/oauth2.0/token";
+    @Value("${login.naver.token-uri}")
+    private String TOKEN_URI;
 
     // 프로필 정보 요청
-    private final String PROFILE_REQUEST_URI = "https://openapi.naver.com/v1/nid/me";
+    @Value("${login.naver.user-info-uri}")
+    private String USER_INFO_URI;
 
+    public OAuthNaverService() {
+    }
 
     @Override
-    public void redirect() {
-
+    public String redirect() {
+       return getRedirectUrl();
     }
 
     @Override
@@ -97,8 +98,8 @@ public class OAuthNaverService implements OAuthService{
                 }
         );
         ResponseEntity<String> response = rt.exchange(
-                LOGIN_REQUEST_URI,
-                HttpMethod.POST,
+                getRedirectUrl(),
+                HttpMethod.GET,
                 request,
                 String.class
         );
@@ -122,7 +123,7 @@ public class OAuthNaverService implements OAuthService{
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> response = rt.exchange(
-                TOKEN_REQUEST_URI,
+                TOKEN_URI,
                 HttpMethod.POST,
                 request,
                 String.class
@@ -139,13 +140,18 @@ public class OAuthNaverService implements OAuthService{
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(headers);
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> response = rt.exchange(
-                PROFILE_REQUEST_URI,
+                USER_INFO_URI,
                 HttpMethod.POST,
                 request,
                 String.class
         );
 
          return parseUserInfo(response.getBody());
+    }
+
+    private String getRedirectUrl(){
+        String state = new BigInteger(130, new SecureRandom()).toString();
+        return AUTHORIZATION_URI + "?response_type=code&client_id=" + CLIENT_ID + "&state=" + state + "&redirect_uri=" + REDIRECT_URI;
     }
 
     private Map<String, String> parseRequest(String responseBody){
