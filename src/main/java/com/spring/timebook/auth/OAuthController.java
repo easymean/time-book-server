@@ -38,9 +38,23 @@ public class OAuthController {
         return oAuthAdapter.redirect(OAuthProvider.GOOGLE);
     }
 
-    @PostMapping("/kakao")
+    @GetMapping("/kakao")
     @ResponseBody
     public String redirectToKakao(){
         return oAuthAdapter.redirect(OAuthProvider.KAKAO);
+    }
+
+    @GetMapping("/callback/kakao")
+    @ResponseBody
+    public boolean callbackByKakao(@RequestParam String code){
+        Map<String, String> info = new HashMap<>();
+        info.put("code",code);
+        return oAuthAdapter.loginByOAuth(OAuthProvider.KAKAO, info);
+    }
+
+    @GetMapping("logout/kakao")
+    @ResponseBody
+    public boolean logoutFromKakao(){
+        return oAuthAdapter.logout(OAuthProvider.KAKAO);
     }
 }

@@ -23,7 +23,6 @@ public class OAuthAdapter {
         this.userService = userService;
         this.oAuthNaverConfig = oAuthNaverConfig;
         this.oAuthKakaoConfig = oAuthKakaoConfig;
-
         init();
     }
 
@@ -55,6 +54,11 @@ public class OAuthAdapter {
 
         Long id = user.getId();
         // 토큰 발급
+        return true;
+    }
+
+    public boolean logout(OAuthProvider type){
+        OAuthLoginService oAuthLoginService = getOAuthService(type);
         return true;
     }
 
