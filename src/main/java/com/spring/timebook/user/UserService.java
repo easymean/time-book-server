@@ -10,6 +10,6 @@ public interface UserService {
 
     Optional<User> getUserByEmail(String email);
 
-    User createUser();
+    User createUser(CreateUserDto userDto);
 
 }
