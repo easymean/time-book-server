@@ -1,5 +1,8 @@
 package com.spring.timebook.auth;
 
+import com.spring.timebook.config.OAuthKakaoConfig;
+import com.spring.timebook.config.OAuthNaverConfig;
+import com.spring.timebook.user.CreateUserDto;
 import com.spring.timebook.user.User;
 import com.spring.timebook.user.UserService;
 import org.springframework.stereotype.Component;
@@ -10,35 +13,49 @@ import java.util.Map;
 @Component
 public class OAuthAdapter {
 
-    private Map<String, OAuthService> serviceMap = new HashMap<>();
-
     private final UserService userService;
+    private final OAuthNaverConfig oAuthNaverConfig;
+    private final OAuthKakaoConfig oAuthKakaoConfig;
 
-    public OAuthAdapter(UserService userService){
+    private final Map<OAuthProvider, OAuthLoginService> loginServiceMap = new HashMap<>();
+
+    public OAuthAdapter(UserService userService, OAuthNaverConfig oAuthNaverConfig, OAuthKakaoConfig oAuthKakaoConfig){
         this.userService = userService;
+        this.oAuthNaverConfig = oAuthNaverConfig;
+        this.oAuthKakaoConfig = oAuthKakaoConfig;
 
-        initServiceMap();
+        init();
     }
 
-
-    private void initServiceMap(){
-        serviceMap.put("naver", new OAuthNaverService());
+    private void init(){
+        loginServiceMap.put(OAuthProvider.NAVER, new OAuthNaverLoginService(oAuthNaverConfig));
+        loginServiceMap.put(OAuthProvider.KAKAO, new OAuthKakaoLoginService(oAuthKakaoConfig));
     }
 
-    private OAuthService getOAuthService(String type){
-        return serviceMap.get(type);
+    private OAuthLoginService getOAuthService(OAuthProvider type){
+        return loginServiceMap.get(type);
     }
 
-    public void loginByOAuth(String type) {
+    public String redirect(OAuthProvider type){
+        OAuthLoginService oAuthLoginService = getOAuthService(type);
+        return oAuthLoginService.redirect();
+    }
 
-        OAuthService oAuthService = getOAuthService(type);
+    public boolean loginByOAuth(OAuthProvider type, Map<String, String> info) {
+        OAuthLoginService oAuthLoginService = getOAuthService(type);
+        OAuthUser oAuthUser = oAuthLoginService.process(info);
+        User user = userService.getUserByEmail(oAuthUser.getEmail())
+                .orElseGet(() -> userService.createUser(
+                        CreateUserDto.builder()
+                                .email(oAuthUser.getEmail())
+                                .username(oAuthUser.getNickname())
+                                .snsType(oAuthUser.getSnsType().name())
+                                .build()
+                ));
 
-        User loginUser = oAuthService.process();
-        Long id = userService.getUserByEmail(loginUser.getEmail())
-                .orElseGet(() -> userService.createUser()).getId();
-
+        Long id = user.getId();
         // 토큰 발급
-
+        return true;
     }
 
 }

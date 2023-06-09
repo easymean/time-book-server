@@ -1,13 +1,13 @@
 package com.spring.timebook.auth;
 
-
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
-@RequestMapping("/oauth2")
+@RequestMapping("/oauth")
 public class OAuthController {
 
     private final OAuthAdapter oAuthAdapter;
@@ -16,24 +16,31 @@ public class OAuthController {
         this.oAuthAdapter = oAuthAdapter;
     }
 
-    @PostMapping("/naver")
+    @GetMapping("/naver")
     @ResponseBody
-    public String loginByNaver(){
-        oAuthAdapter.loginByOAuth("naver");
-        return "";
+    public String redirectToNaver(){
+        return oAuthAdapter.redirect(OAuthProvider.NAVER);
+    }
+
+    @GetMapping("/callback/naver")
+    @ResponseBody
+    public boolean callbackByNaver(@RequestParam String code, @RequestParam String state){
+        Map<String, String> info = new HashMap<>();
+        info.put("code",code);
+        info.put("state", state);
+        return oAuthAdapter.loginByOAuth(OAuthProvider.NAVER, info);
     }
 
     @PostMapping("/google")
     @ResponseBody
     public String loginByGoogle(){
-        oAuthAdapter.loginByOAuth("google");
-        return "";
+
+        return oAuthAdapter.redirect(OAuthProvider.GOOGLE);
     }
 
     @PostMapping("/kakao")
     @ResponseBody
-    public String loginByKakao(){
-        oAuthAdapter.loginByOAuth("kakao");
-        return "";
+    public String redirectToKakao(){
+        return oAuthAdapter.redirect(OAuthProvider.KAKAO);
     }
 }
