@@ -12,7 +12,4 @@ public class OAuthNaverConfig {
     private String clientId;
     private String clientSecret;
     private String redirectUri;
-    private String authorizationUri;
-    private String tokenUri;
-    private String userInfoUri;
 }
