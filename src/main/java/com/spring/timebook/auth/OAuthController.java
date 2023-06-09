@@ -52,9 +52,4 @@ public class OAuthController {
         return oAuthAdapter.loginByOAuth(OAuthProvider.KAKAO, info);
     }
 
-    @GetMapping("logout/kakao")
-    @ResponseBody
-    public boolean logoutFromKakao(){
-        return oAuthAdapter.logout(OAuthProvider.KAKAO);
-    }
 }
