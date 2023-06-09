@@ -47,7 +47,7 @@ public class OAuthNaverLoginService implements OAuthLoginService {
 
         String code = info.get("code");
         String state = info.get("state");
-        String accessToken = getAccessToken(code,state);
+        String accessToken = getAccessToken(code, state);
 
         // 유저 프로필 정보 가져오기
         return getUserInfo(accessToken);
@@ -89,7 +89,7 @@ public class OAuthNaverLoginService implements OAuthLoginService {
         String USER_INFO_URI = "https://openapi.naver.com/v1/nid/me";
         ResponseEntity<String> response = rt.exchange(
                 USER_INFO_URI,
-                HttpMethod.POST,
+                HttpMethod.GET,
                 request,
                 String.class
         );
