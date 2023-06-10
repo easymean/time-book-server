@@ -1,8 +1,8 @@
 package com.spring.timebook.config;
 
 import com.spring.timebook.aop.AuthenticationInterceptor;
-import com.spring.timebook.auth.JwtProvider;
-import com.spring.timebook.auth.TokenProvider;
+import com.spring.timebook.auth.token.JwtProvider;
+import com.spring.timebook.auth.token.TokenProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

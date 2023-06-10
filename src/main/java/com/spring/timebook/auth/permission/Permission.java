@@ -1,6 +1,6 @@
-package com.spring.timebook.auth.annotation;
+package com.spring.timebook.auth.permission;
 
-import com.spring.timebook.auth.PermissionRole;
+import com.spring.timebook.auth.exception.PermissionRole;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

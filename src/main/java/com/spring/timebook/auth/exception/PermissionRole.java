@@ -1,4 +1,4 @@
-package com.spring.timebook.auth;
+package com.spring.timebook.auth.exception;
 
 public enum PermissionRole {
     ADMIN, MEMBER

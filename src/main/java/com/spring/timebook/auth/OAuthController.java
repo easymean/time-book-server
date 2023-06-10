@@ -1,5 +1,7 @@
 package com.spring.timebook.auth;
 
+import com.spring.timebook.auth.oauth.OAuthService;
+import com.spring.timebook.auth.oauth.OAuthProvider;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,16 +12,16 @@ import java.util.Map;
 @RequestMapping("/oauth")
 public class OAuthController {
 
-    private final OAuthAdapter oAuthAdapter;
+    private final OAuthService oAuthService;
 
-    public OAuthController(OAuthAdapter oAuthAdapter) {
-        this.oAuthAdapter = oAuthAdapter;
+    public OAuthController(OAuthService oAuthService) {
+        this.oAuthService = oAuthService;
     }
 
     @GetMapping("/naver")
     @ResponseBody
     public String redirectToNaver(){
-        return oAuthAdapter.redirect(OAuthProvider.NAVER);
+        return oAuthService.redirect(OAuthProvider.NAVER);
     }
 
     @GetMapping("/callback/naver")
@@ -28,20 +30,20 @@ public class OAuthController {
         Map<String, String> info = new HashMap<>();
         info.put("code",code);
         info.put("state", state);
-        return oAuthAdapter.loginByOAuth(OAuthProvider.NAVER, info);
+        return oAuthService.loginByOAuth(OAuthProvider.NAVER, info);
     }
 
     @PostMapping("/google")
     @ResponseBody
     public String loginByGoogle(){
 
-        return oAuthAdapter.redirect(OAuthProvider.GOOGLE);
+        return oAuthService.redirect(OAuthProvider.GOOGLE);
     }
 
     @GetMapping("/kakao")
     @ResponseBody
     public String redirectToKakao(){
-        return oAuthAdapter.redirect(OAuthProvider.KAKAO);
+        return oAuthService.redirect(OAuthProvider.KAKAO);
     }
 
     @GetMapping("/callback/kakao")
@@ -49,7 +51,7 @@ public class OAuthController {
     public boolean callbackByKakao(@RequestParam String code){
         Map<String, String> info = new HashMap<>();
         info.put("code",code);
-        return oAuthAdapter.loginByOAuth(OAuthProvider.KAKAO, info);
+        return oAuthService.loginByOAuth(OAuthProvider.KAKAO, info);
     }
 
 }

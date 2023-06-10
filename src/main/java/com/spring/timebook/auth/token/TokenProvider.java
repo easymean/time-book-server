@@ -1,4 +1,4 @@
-package com.spring.timebook.auth;
+package com.spring.timebook.auth.token;
 
 import com.spring.timebook.user.User;
 

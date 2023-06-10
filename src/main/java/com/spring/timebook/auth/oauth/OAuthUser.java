@@ -1,5 +1,4 @@
-package com.spring.timebook.auth;
-
+package com.spring.timebook.auth.oauth;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.spring.timebook.auth;
+package com.spring.timebook.auth.oauth;
 
 import com.spring.timebook.config.OAuthKakaoConfig;
 import com.spring.timebook.config.OAuthNaverConfig;
@@ -11,15 +11,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class OAuthAdapter {
+public class OAuthService {
 
     private final UserService userService;
     private final OAuthNaverConfig oAuthNaverConfig;
     private final OAuthKakaoConfig oAuthKakaoConfig;
 
-    private final Map<OAuthProvider, OAuthLoginService> loginServiceMap = new HashMap<>();
+    private final Map<OAuthProvider, OAuthProviderService> providerMap = new HashMap<>();
 
-    public OAuthAdapter(UserService userService, OAuthNaverConfig oAuthNaverConfig, OAuthKakaoConfig oAuthKakaoConfig){
+    public OAuthService(UserService userService, OAuthNaverConfig oAuthNaverConfig, OAuthKakaoConfig oAuthKakaoConfig){
         this.userService = userService;
         this.oAuthNaverConfig = oAuthNaverConfig;
         this.oAuthKakaoConfig = oAuthKakaoConfig;
@@ -27,22 +27,22 @@ public class OAuthAdapter {
     }
 
     private void init(){
-        loginServiceMap.put(OAuthProvider.NAVER, new OAuthNaverLoginService(oAuthNaverConfig));
-        loginServiceMap.put(OAuthProvider.KAKAO, new OAuthKakaoLoginService(oAuthKakaoConfig));
+        providerMap.put(OAuthProvider.NAVER, new OAuthNaverService(oAuthNaverConfig));
+        providerMap.put(OAuthProvider.KAKAO, new OAuthKakaoService(oAuthKakaoConfig));
     }
 
-    private OAuthLoginService getOAuthService(OAuthProvider type){
-        return loginServiceMap.get(type);
+    private OAuthProviderService getOAuthProvider(OAuthProvider type){
+        return providerMap.get(type);
     }
 
     public String redirect(OAuthProvider type){
-        OAuthLoginService oAuthLoginService = getOAuthService(type);
-        return oAuthLoginService.redirect();
+        OAuthProviderService oAuthProviderService = getOAuthProvider(type);
+        return oAuthProviderService.redirect();
     }
 
     public boolean loginByOAuth(OAuthProvider type, Map<String, String> info) {
-        OAuthLoginService oAuthLoginService = getOAuthService(type);
-        OAuthUser oAuthUser = oAuthLoginService.process(info);
+        OAuthProviderService oAuthProviderService = getOAuthProvider(type);
+        OAuthUser oAuthUser = oAuthProviderService.process(info);
         User user = userService.getUserByEmail(oAuthUser.getEmail())
                 .orElseGet(() -> userService.createUser(
                         CreateUserDto.builder()
@@ -58,7 +58,7 @@ public class OAuthAdapter {
     }
 
     public boolean logout(OAuthProvider type){
-        OAuthLoginService oAuthLoginService = getOAuthService(type);
+        OAuthProviderService oAuthProviderService = getOAuthProvider(type);
         return true;
     }
 

@@ -1,8 +1,8 @@
-package com.spring.timebook.auth;
+package com.spring.timebook.auth.oauth;
 
 import java.util.Map;
 
-public interface OAuthLoginService {
+public interface OAuthProviderService {
     String redirect();
     OAuthUser process(Map<String, String> info);
 }

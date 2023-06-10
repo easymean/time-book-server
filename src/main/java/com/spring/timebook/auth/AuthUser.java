@@ -1,5 +1,6 @@
 package com.spring.timebook.auth;
 
+import com.spring.timebook.auth.exception.PermissionRole;
 import lombok.Builder;
 import lombok.Getter;
 
