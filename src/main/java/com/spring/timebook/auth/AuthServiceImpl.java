@@ -14,18 +14,8 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public User join() {
-        return null;
-    }
-
-    @Override
-    public String login() {
-        return null;
-    }
-
-    @Override
-    public void logout() {
-
+    public boolean logout() {
+        return true;
     }
 
     @Override

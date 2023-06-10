@@ -1,7 +1,8 @@
 package com.spring.timebook.user;
 
-import com.spring.timebook.user.exception.UserNotFoundException;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 public class UserServiceImpl implements UserService {
@@ -14,7 +15,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeUsername() {
-
     }
 
     @Override
@@ -22,5 +22,18 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 
+    @Override
+    public User createUser(CreateUserDto userDto) {
+        User user =  User.builder().
+                email(userDto.getEmail())
+                .username(userDto.getUsername())
+                .build();
+        userRepository.save(user);
+        return user;
+    }
 }
