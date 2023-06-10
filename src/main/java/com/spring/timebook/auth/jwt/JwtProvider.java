@@ -4,6 +4,7 @@ import com.spring.timebook.user.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -51,15 +52,12 @@ public class JwtProvider implements TokenProvider {
                     .setSigningKey(key).build()
                     .parseClaimsJws(token);
             return true;
-        } catch(ExpiredJwtException e){
-            // 에러 처리
-            // 토큰이 만료되었습니다.
-            e.printStackTrace();
-        } catch(UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e){
+        } catch(UnsupportedJwtException | MalformedJwtException | IllegalArgumentException | SignatureException | ExpiredJwtException e){
             // 에러 처리
             // 유효하지 않은 토큰입니다.
             e.printStackTrace();
         }
+
         return false;
     }
 
