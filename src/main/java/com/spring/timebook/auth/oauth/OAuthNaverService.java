@@ -24,9 +24,7 @@ import java.util.Map;
 public class OAuthNaverService implements OAuthProviderService {
 
     private String clientId;
-
     private String clientSecret;
-
     private String redirectUri;
 
     public OAuthNaverService(OAuthNaverProperty oAuthNaverProperty) {

@@ -2,7 +2,7 @@ package com.spring.timebook.aop;
 
 import com.spring.timebook.auth.AuthService;
 import com.spring.timebook.auth.AuthUser;
-import com.spring.timebook.auth.token.TokenProvider;
+import com.spring.timebook.auth.jwt.TokenProvider;
 import com.spring.timebook.auth.permission.Permission;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,6 +1,6 @@
 package com.spring.timebook.user;
 
-import com.spring.timebook.auth.exception.PermissionRole;
+import com.spring.timebook.auth.permission.PermissionRole;
 import com.spring.timebook.common.BaseEntity;
 import com.spring.timebook.tag.Tag;
 import com.spring.timebook.time.Time;
