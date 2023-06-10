@@ -1,19 +1,25 @@
-package com.spring.timebook.auth.token;
+package com.spring.timebook.auth.jwt;
 
 import com.spring.timebook.user.User;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Date;
 
+@Component
 public class JwtProvider implements TokenProvider {
 
-    private static final String AUTHORITIES_KEY= "username";
+    private static final String AUTHORITIES_KEY = "email";
     private static final long JWT_EXPIRATION_MS = 24 * 60 * 60 * 1000L;
-    private final byte[] key;
+    private final Key key;
 
-
-    public JwtProvider(String secretKey){
-        key = secretKey.getBytes();
+    public JwtProvider(@Value("${jwt.secret}") String secretKey){
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     @Override
@@ -24,8 +30,8 @@ public class JwtProvider implements TokenProvider {
 
         return Jwts.builder()
                 .setSubject(user.getId().toString()) // 구분자
-                .claim(AUTHORITIES_KEY, user.getUsername())
-                .signWith(SignatureAlgorithm.HS256, key)
+                .claim(AUTHORITIES_KEY, user.getEmail())
+                .signWith(key, SignatureAlgorithm.HS256)
                 .setExpiration(validity)
                 .compact();
     }
@@ -41,14 +47,15 @@ public class JwtProvider implements TokenProvider {
 
     private boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(key)
+            Jwts.parserBuilder()
+                    .setSigningKey(key).build()
                     .parseClaimsJws(token);
             return true;
         } catch(ExpiredJwtException e){
             // 에러 처리
             // 토큰이 만료되었습니다.
             e.printStackTrace();
-        } catch(UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e){
+        } catch(UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e){
             // 에러 처리
             // 유효하지 않은 토큰입니다.
             e.printStackTrace();
@@ -57,7 +64,8 @@ public class JwtProvider implements TokenProvider {
     }
 
     private Claims parseClaims(String token){
-        return Jwts.parser().setSigningKey(key)
+        return Jwts.parserBuilder()
+                .setSigningKey(key).build()
                 .parseClaimsJws(token)
                 .getBody();
     }

@@ -1,5 +1,6 @@
 package com.spring.timebook.auth.oauth;
 
+import com.spring.timebook.auth.jwt.TokenProvider;
 import com.spring.timebook.config.properties.OAuthKakaoProperty;
 import com.spring.timebook.config.properties.OAuthNaverProperty;
 import com.spring.timebook.user.CreateUserDto;
@@ -14,13 +15,15 @@ import java.util.Map;
 public class OAuthService {
 
     private final UserService userService;
+    private final TokenProvider tokenProvider;
     private final OAuthNaverProperty oAuthNaverProperty;
     private final OAuthKakaoProperty oAuthKakaoProperty;
 
     private final Map<OAuthProvider, OAuthProviderService> providerMap = new HashMap<>();
 
-    public OAuthService(UserService userService, OAuthNaverProperty oAuthNaverProperty, OAuthKakaoProperty oAuthKakaoProperty){
+    public OAuthService(UserService userService, TokenProvider tokenProvider, OAuthNaverProperty oAuthNaverProperty, OAuthKakaoProperty oAuthKakaoProperty){
         this.userService = userService;
+        this.tokenProvider = tokenProvider;
         this.oAuthNaverProperty = oAuthNaverProperty;
         this.oAuthKakaoProperty = oAuthKakaoProperty;
         init();
@@ -40,7 +43,7 @@ public class OAuthService {
         return oAuthProviderService.redirect();
     }
 
-    public boolean loginByOAuth(OAuthProvider type, Map<String, String> info) {
+    public String loginByOAuth(OAuthProvider type, Map<String, String> info) {
         OAuthProviderService oAuthProviderService = getOAuthProvider(type);
         OAuthUser oAuthUser = oAuthProviderService.process(info);
         User user = userService.getUserByEmail(oAuthUser.getEmail())
@@ -52,9 +55,7 @@ public class OAuthService {
                                 .build()
                 ));
 
-        Long id = user.getId();
-        // 토큰 발급
-        return true;
+        return tokenProvider.createToken(user);
     }
 
     public boolean logout(OAuthProvider type){

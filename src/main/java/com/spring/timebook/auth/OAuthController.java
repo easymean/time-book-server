@@ -26,7 +26,7 @@ public class OAuthController {
 
     @GetMapping("/callback/naver")
     @ResponseBody
-    public boolean callbackByNaver(@RequestParam String code, @RequestParam String state){
+    public String callbackByNaver(@RequestParam String code, @RequestParam String state){
         Map<String, String> info = new HashMap<>();
         info.put("code",code);
         info.put("state", state);
@@ -48,7 +48,7 @@ public class OAuthController {
 
     @GetMapping("/callback/kakao")
     @ResponseBody
-    public boolean callbackByKakao(@RequestParam String code){
+    public String callbackByKakao(@RequestParam String code){
         Map<String, String> info = new HashMap<>();
         info.put("code",code);
         return oAuthService.loginByOAuth(OAuthProvider.KAKAO, info);
