@@ -1,9 +1,10 @@
-package com.spring.timebook.auth;
+package com.spring.timebook.auth.oauth;
+
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.timebook.auth.exception.ParseException;
-import com.spring.timebook.config.OAuthKakaoConfig;
+import com.spring.timebook.config.properties.OAuthNaverProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpEntity;
@@ -13,52 +14,58 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Map;
 
 @Getter
 @Setter
-public class OAuthKakaoLoginService implements OAuthLoginService {
+public class OAuthNaverService implements OAuthProviderService {
 
     private String clientId;
+    private String clientSecret;
     private String redirectUri;
 
-    public OAuthKakaoLoginService(OAuthKakaoConfig oAuthKakaoConfig){
-        this.clientId = oAuthKakaoConfig.getApiKey();
-        this.redirectUri = oAuthKakaoConfig.getRedirectUri();
+    public OAuthNaverService(OAuthNaverProperty oAuthNaverProperty) {
+        this.clientId = oAuthNaverProperty.getClientId();
+        this.clientSecret = oAuthNaverProperty.getClientSecret();
+        this.redirectUri = oAuthNaverProperty.getRedirectUri();
     }
 
     @Override
     public String redirect() {
-        return getRedirectUrl();
+       return getRedirectUrl();
     }
 
     @Override
     public OAuthUser process(Map<String, String> info) {
+        
+        // access token 발급
 
         String code = info.get("code");
-        String accessToken = getAccessToken(code);
+        String state = info.get("state");
+        String accessToken = getAccessToken(code, state);
 
+        // 유저 프로필 정보 가져오기
         return getUserInfo(accessToken);
     }
 
-    public void logout(){
-
-    }
-
-    private String getAccessToken(String code){
+    public String getAccessToken(String code, String state) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
-        body.add("redirect_uri", redirectUri);
+        body.add("client_secret", clientSecret);
         body.add("code", code);
+        body.add("state", state);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
         RestTemplate rt = new RestTemplate();
         // 토급 요청
-        String TOKEN_URI = "https://kauth.kakao.com/oauth/token";
+        String TOKEN_URI = "https://nid.naver.com/oauth2.0/token";
         ResponseEntity<String> response = rt.exchange(
                 TOKEN_URI,
                 HttpMethod.POST,
@@ -68,25 +75,32 @@ public class OAuthKakaoLoginService implements OAuthLoginService {
         return parseToken(response.getBody());
     }
 
-    private OAuthUser getUserInfo(String accessToken){
+    public OAuthUser getUserInfo(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
-        headers.add("Content-type", "application/x-www-form-urlencoded");
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         // HTTP 요청 보내기 - Post 방식
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(headers);
         RestTemplate rt = new RestTemplate();
         // 프로필 정보 요청
-        String userInfoUri = "https://kapi.kakao.com/v2/user/me";
+        String USER_INFO_URI = "https://openapi.naver.com/v1/nid/me";
         ResponseEntity<String> response = rt.exchange(
-                userInfoUri,
-                HttpMethod.POST,
+                USER_INFO_URI,
+                HttpMethod.GET,
                 request,
                 String.class
         );
 
-        return parseUserInfo(response.getBody());
+         return parseUserInfo(response.getBody());
     }
+
+    private String getRedirectUrl(){
+        String state = new BigInteger(130, new SecureRandom()).toString();
+        return "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=" + clientId
+                + "&state=" + state + "&redirect_uri=" + redirectUri;
+    }
+
 
     private String parseToken(String responseBody){
         try{
@@ -99,34 +113,29 @@ public class OAuthKakaoLoginService implements OAuthLoginService {
         }
     }
 
-    private OAuthUser parseUserInfo(String responseBody){
+    private OAuthUser parseUserInfo(String responseBody) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode response = objectMapper.readTree(responseBody);
+            JsonNode jsonNode = objectMapper.readTree(responseBody);
+
+            String resultCode = jsonNode.get("resultcode").asText();
+            String message = jsonNode.get("message").asText();
+
+            JsonNode response = jsonNode.get("response");
 
             String id = response.get("id").asText();
-
-            JsonNode account = response.get("kakao_account");
-            String email = account.get("email").asText();
-
-            JsonNode profile = account.get("profile");
-            String nickname = profile.get("nickname").asText();
-
+            String email = response.get("email").asText();
+            String nickname = response.get("name").asText();
 
             return OAuthUser.builder()
                     .email(email)
                     .nickname(nickname)
+                    .snsType(OAuthProvider.NAVER)
                     .snsId(id)
-                    .snsType(OAuthProvider.KAKAO)
                     .build();
 
         } catch (Exception e) {
             throw new ParseException(e.getMessage());
         }
-    }
-
-    private String getRedirectUrl(){
-        return "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id="+ clientId +
-                "&redirect_uri=" + redirectUri;
     }
 }

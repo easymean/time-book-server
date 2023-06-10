@@ -1,5 +1,8 @@
 package com.spring.timebook.time;
 
+import com.spring.timebook.auth.AuthUser;
+import com.spring.timebook.auth.permission.Permission;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +18,10 @@ public class TimeController {
 
     @GetMapping
     @ResponseBody
-    public String getTimeListByDay(@RequestParam int month, @RequestParam int day) {
+    @Permission
+    public String getTimeListByDay(@RequestParam int month, @RequestParam int day, HttpServletRequest request) {
+        AuthUser user = (AuthUser) request.getAttribute("user");
+
         return "Hello World!";
     }
 

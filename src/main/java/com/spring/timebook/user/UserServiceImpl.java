@@ -7,9 +7,9 @@ import java.util.Optional;
 @Component
 public class UserServiceImpl implements UserService {
 
-    private final JpaUserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public UserServiceImpl(JpaUserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

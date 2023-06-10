@@ -1,5 +1,6 @@
 package com.spring.timebook.user;
 
+import com.spring.timebook.auth.permission.PermissionRole;
 import com.spring.timebook.common.BaseEntity;
 import com.spring.timebook.tag.Tag;
 import com.spring.timebook.time.Time;
@@ -19,7 +20,7 @@ public class User extends BaseEntity {
     @Getter
     private String email;
 
-    @Setter
+    @Setter @Getter
     @Column(nullable = false)
     private String username;
 
@@ -28,6 +29,10 @@ public class User extends BaseEntity {
 
     @Setter
     private long savedTime;
+
+    @Setter @Getter
+    @Enumerated(EnumType.STRING)
+    private PermissionRole permissionRole;
 
     @Setter
     private String snsId;
@@ -50,6 +55,6 @@ public class User extends BaseEntity {
         this.username = username;
         this.level = 1;
         this.savedTime = 0;
+        this.permissionRole = PermissionRole.MEMBER;
     }
-
 }
