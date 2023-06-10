@@ -4,7 +4,7 @@ package com.spring.timebook.auth.oauth;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.timebook.auth.exception.ParseException;
-import com.spring.timebook.config.OAuthNaverConfig;
+import com.spring.timebook.config.properties.OAuthNaverProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpEntity;
@@ -29,10 +29,10 @@ public class OAuthNaverService implements OAuthProviderService {
 
     private String redirectUri;
 
-    public OAuthNaverService(OAuthNaverConfig oAuthNaverConfig) {
-        this.clientId = oAuthNaverConfig.getClientId();
-        this.clientSecret = oAuthNaverConfig.getClientSecret();
-        this.redirectUri = oAuthNaverConfig.getRedirectUri();
+    public OAuthNaverService(OAuthNaverProperty oAuthNaverProperty) {
+        this.clientId = oAuthNaverProperty.getClientId();
+        this.clientSecret = oAuthNaverProperty.getClientSecret();
+        this.redirectUri = oAuthNaverProperty.getRedirectUri();
     }
 
     @Override

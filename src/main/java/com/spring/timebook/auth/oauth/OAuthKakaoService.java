@@ -3,7 +3,7 @@ package com.spring.timebook.auth.oauth;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.timebook.auth.exception.ParseException;
-import com.spring.timebook.config.OAuthKakaoConfig;
+import com.spring.timebook.config.properties.OAuthKakaoProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpEntity;
@@ -22,9 +22,9 @@ public class OAuthKakaoService implements OAuthProviderService {
     private String clientId;
     private String redirectUri;
 
-    public OAuthKakaoService(OAuthKakaoConfig oAuthKakaoConfig){
-        this.clientId = oAuthKakaoConfig.getApiKey();
-        this.redirectUri = oAuthKakaoConfig.getRedirectUri();
+    public OAuthKakaoService(OAuthKakaoProperty oAuthKakaoProperty){
+        this.clientId = oAuthKakaoProperty.getApiKey();
+        this.redirectUri = oAuthKakaoProperty.getRedirectUri();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.spring.timebook.auth.oauth;
 
-import com.spring.timebook.config.OAuthKakaoConfig;
-import com.spring.timebook.config.OAuthNaverConfig;
+import com.spring.timebook.config.properties.OAuthKakaoProperty;
+import com.spring.timebook.config.properties.OAuthNaverProperty;
 import com.spring.timebook.user.CreateUserDto;
 import com.spring.timebook.user.User;
 import com.spring.timebook.user.UserService;
@@ -14,21 +14,21 @@ import java.util.Map;
 public class OAuthService {
 
     private final UserService userService;
-    private final OAuthNaverConfig oAuthNaverConfig;
-    private final OAuthKakaoConfig oAuthKakaoConfig;
+    private final OAuthNaverProperty oAuthNaverProperty;
+    private final OAuthKakaoProperty oAuthKakaoProperty;
 
     private final Map<OAuthProvider, OAuthProviderService> providerMap = new HashMap<>();
 
-    public OAuthService(UserService userService, OAuthNaverConfig oAuthNaverConfig, OAuthKakaoConfig oAuthKakaoConfig){
+    public OAuthService(UserService userService, OAuthNaverProperty oAuthNaverProperty, OAuthKakaoProperty oAuthKakaoProperty){
         this.userService = userService;
-        this.oAuthNaverConfig = oAuthNaverConfig;
-        this.oAuthKakaoConfig = oAuthKakaoConfig;
+        this.oAuthNaverProperty = oAuthNaverProperty;
+        this.oAuthKakaoProperty = oAuthKakaoProperty;
         init();
     }
 
     private void init(){
-        providerMap.put(OAuthProvider.NAVER, new OAuthNaverService(oAuthNaverConfig));
-        providerMap.put(OAuthProvider.KAKAO, new OAuthKakaoService(oAuthKakaoConfig));
+        providerMap.put(OAuthProvider.NAVER, new OAuthNaverService(oAuthNaverProperty));
+        providerMap.put(OAuthProvider.KAKAO, new OAuthKakaoService(oAuthKakaoProperty));
     }
 
     private OAuthProviderService getOAuthProvider(OAuthProvider type){
