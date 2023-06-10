@@ -34,7 +34,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly 'com.h2database:h2'
 
-
+	// custom properties
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
 }
 

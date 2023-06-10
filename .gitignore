@@ -38,3 +38,6 @@ out/
 
 ### LOG ###
 *.log
+
+### PROPERTY ###
+*.properties

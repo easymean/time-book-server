@@ -4,20 +4,19 @@ import com.spring.timebook.common.BaseEntity;
 import com.spring.timebook.tag.Tag;
 import com.spring.timebook.time.Time;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="user")
+@Table(name="users")
 @NoArgsConstructor
+@ToString
 public class User extends BaseEntity {
 
     @Column(nullable = false, unique = true)
+    @Getter
     private String email;
 
     @Setter
@@ -29,6 +28,12 @@ public class User extends BaseEntity {
 
     @Setter
     private long savedTime;
+
+    @Setter
+    private String snsId;
+
+    @Setter
+    private String snsType;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     @Getter
@@ -46,4 +51,5 @@ public class User extends BaseEntity {
         this.level = 1;
         this.savedTime = 0;
     }
+
 }
